@@ -26,11 +26,11 @@ Le projet est construit en deux étapes successives :
 *	Stockage centralisé des dépenses dans une base de données, permettant la synchronisation entre plusieurs appareils.
 *	API dédiée pour gérer les opérations CRUD et assurer une transition fluide entre la version locale et la version connectée.  
 <br/>
-
-Vous êtes actuellement sur la partie BACKEND du projet.  
-
-Vous pouvez voir la partie FRONTEND à cette adresse: <a href="https://github.com/Bernard-VERA/autodepenses-frontend">AutoDépenses Frontend </a>
 <br/>
+Vous êtes actuellement sur la partie BACKEND du projet.  
+<br/>
+Vous pouvez voir la partie FRONTEND à cette adresse: <a href="https://github.com/Bernard-VERA/autodepenses-frontend">AutoDépenses Frontend </a>
+<br/><br/>
 ----
 
 <p align="center" width="100%">

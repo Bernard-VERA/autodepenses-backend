@@ -7,7 +7,7 @@
 ![image](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white) 
 
 
-## BACKEND
+## BACKEND<br/>
 
 
 ## 🌦️ Présentation
@@ -26,10 +26,11 @@ Le projet est construit en deux étapes successives :
 *	Stockage centralisé des dépenses dans une base de données, permettant la synchronisation entre plusieurs appareils.
 *	API dédiée pour gérer les opérations CRUD et assurer une transition fluide entre la version locale et la version connectée.  
 <br/>
-<br/>
-Vous êtes actuellement sur la partie BACKEND du projet  
-Vous pouvez voir la partie FRONTEND à cette adresse: <a href="https://github.com/Bernard-VERA/autodepenses-frontend">AutoDépenses Frontend </a>
 
+Vous êtes actuellement sur la partie BACKEND du projet.  
+
+Vous pouvez voir la partie FRONTEND à cette adresse: <a href="https://github.com/Bernard-VERA/autodepenses-frontend">AutoDépenses Frontend </a>
+<br/>
 ----
 
 <p align="center" width="100%">

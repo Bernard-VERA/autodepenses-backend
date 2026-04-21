@@ -7,11 +7,21 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 
+// Ajout d'un Rate Limit conseillé par GitHub pour la sécurité
+const rateLimit = require("express-rate-limit");
+
 const authRoutes = require("./routes/auth");
 const vehicleRoutes = require("./routes/vehicles");
 const expenseRoutes = require("./routes/expenses");
 
 const app = express();
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // 100 requêtes par IP
+});
+
+app.use(limiter);
 
 // Middleware
 app.use(cors({ origin: process.env.FRONTEND_URL }));

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const User = require("../models/User");
 const auth = require("../middleware/auth");
-const { body, validationResult } = require("express-validator");
+const { body, query, validationResult } = require("express-validator");
 
 
 const router = express.Router();
@@ -79,45 +79,50 @@ router.post("/send-magic-link",
 
 // GET /api/auth/verify?token=xxx&email=xxx
 // Vérifie le token et retourne un JWT
-router.get("/verify", async (req, res) => {
-    try {
-        const { token, email } = req.query;
-
-        if (!token || !email) {
-            return res.status(400).json({ error: "Token et email requis" });
+router.get("/verify",
+    [
+        query("email").isEmail().withMessage("Email invalide"),
+        query("token").isHexadecimal().withMessage("Token invalide"),
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
+        try {
+            const { token, email } = req.query;
 
-        const user = await User.findOne({
-            email: email.toLowerCase(),
-            magicToken: token,
-            magicTokenExpires: { $gt: new Date() },
-        });
+            const user = await User.findOne({
+                email: email.toLowerCase(),
+                magicToken: token,
+                magicTokenExpires: { $gt: new Date() },
+            });
 
-        if (!user) {
-            return res.status(401).json({ error: "Lien invalide ou expiré" });
+            if (!user) {
+                return res.status(401).json({ error: "Lien invalide ou expiré" });
+            }
+
+            // Invalider le token (usage unique)
+            user.magicToken = null;
+            user.magicTokenExpires = null;
+            await user.save();
+
+            // Générer un JWT de session (7 jours)
+            const jwtToken = jwt.sign(
+                { userId: user._id, email: user.email },
+                process.env.JWT_SECRET,
+                { expiresIn: "7d" }
+            );
+
+            // Rediriger vers le frontend avec le token
+            res.redirect(
+                `${process.env.FRONTEND_URL}/auth/callback?token=${jwtToken}&email=${encodeURIComponent(user.email)}`
+            );
+        } catch (err) {
+            console.error("Erreur verify :", err);
+            res.status(500).json({ error: "Erreur serveur" });
         }
-
-        // Invalider le token (usage unique)
-        user.magicToken = null;
-        user.magicTokenExpires = null;
-        await user.save();
-
-        // Générer un JWT de session (7 jours)
-        const jwtToken = jwt.sign(
-            { userId: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "7d" }
-        );
-
-        // Rediriger vers le frontend avec le token
-        res.redirect(
-            `${process.env.FRONTEND_URL}/auth/callback?token=${jwtToken}&email=${encodeURIComponent(user.email)}`
-        );
-    } catch (err) {
-        console.error("Erreur verify :", err);
-        res.status(500).json({ error: "Erreur serveur" });
-    }
-});
+    });
 
 // GET /api/auth/me — retourne l'utilisateur connecté
 router.get("/me", auth, async (req, res) => {

@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const User = require("../models/User");
 const auth = require("../middleware/auth");
+const { body, validationResult } = require("express-validator");
+
 
 const router = express.Router();
 
@@ -20,35 +22,39 @@ const transporter = nodemailer.createTransport({
 
 // POST /api/auth/send-magic-link
 // Envoie un lien magique à l'email fourni
-router.post("/send-magic-link", async (req, res) => {
-    try {
-        const { email } = req.body;
-
-        if (!email) {
-            return res.status(400).json({ error: "Email requis" });
+router.post("/send-magic-link",
+    [
+        body("email").isEmail().withMessage("Email invalide"),
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
+        try {
+            const { email } = req.body;
 
-        // Créer ou retrouver l'utilisateur
-        let user = await User.findOne({ email: email.toLowerCase() });
-        if (!user) {
-            user = new User({ email: email.toLowerCase() });
-        }
+            // Créer ou retrouver l'utilisateur
+            let user = await User.findOne({ email: email.toLowerCase() });
+            if (!user) {
+                user = new User({ email: email.toLowerCase() });
+            }
 
-        // Générer un token aléatoire
-        const magicToken = crypto.randomBytes(32).toString("hex");
-        user.magicToken = magicToken;
-        user.magicTokenExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
-        await user.save();
+            // Générer un token aléatoire
+            const magicToken = crypto.randomBytes(32).toString("hex");
+            user.magicToken = magicToken;
+            user.magicTokenExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+            await user.save();
 
-        // Construire le lien
-        const magicLink = `${process.env.FRONTEND_URL}/auth/verify?token=${magicToken}&email=${encodeURIComponent(user.email)}`;
+            // Construire le lien
+            const magicLink = `${process.env.FRONTEND_URL}/auth/verify?token=${magicToken}&email=${encodeURIComponent(user.email)}`;
 
-        // Envoyer l'email
-        await transporter.sendMail({
-            from: `"Suivi Véhicule" <${process.env.SMTP_USER}>`,
-            to: user.email,
-            subject: "Votre lien de connexion",
-            html: `
+            // Envoyer l'email
+            await transporter.sendMail({
+                from: `"Suivi Véhicule" <${process.env.SMTP_USER}>`,
+                to: user.email,
+                subject: "Votre lien de connexion",
+                html: `
         <h2>Connexion à Suivi Véhicule</h2>
         <p>Cliquez sur le lien ci-dessous pour vous connecter :</p>
         <p><a href="${magicLink}" style="
@@ -62,14 +68,14 @@ router.post("/send-magic-link", async (req, res) => {
         <p>Ce lien expire dans 15 minutes.</p>
         <p>Si vous n'avez pas demandé ce lien, ignorez cet email.</p>
       `,
-        });
+            });
 
-        res.json({ message: "Lien magique envoyé ! Vérifiez votre boîte email." });
-    } catch (err) {
-        console.error("Erreur send-magic-link :", err);
-        res.status(500).json({ error: "Erreur serveur" });
-    }
-});
+            res.json({ message: "Lien magique envoyé ! Vérifiez votre boîte email." });
+        } catch (err) {
+            console.error("Erreur send-magic-link :", err);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    });
 
 // GET /api/auth/verify?token=xxx&email=xxx
 // Vérifie le token et retourne un JWT

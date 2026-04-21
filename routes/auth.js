@@ -92,8 +92,8 @@ router.get("/verify",
             const { token, email } = req.query;
 
             const user = await User.findOne({
-                email: email.toLowerCase(),
-                magicToken: token,
+                email: { $eq: email.toLowerCase() },
+                magicToken: { $eq: token },
                 magicTokenExpires: { $gt: new Date() },
             });
 

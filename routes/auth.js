@@ -6,7 +6,6 @@ const User = require("../models/User");
 const auth = require("../middleware/auth");
 const { body, query, validationResult } = require("express-validator");
 
-
 const router = express.Router();
 
 // Créer le transporteur email

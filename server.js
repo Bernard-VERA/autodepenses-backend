@@ -1,3 +1,7 @@
+// Force Node à utiliser un DNS compatible avec MongoDB Atlas.a supprimer pour la mise en prod
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");

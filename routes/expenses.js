@@ -6,6 +6,28 @@ const router = express.Router();
 
 router.use(auth);
 
+// Champs autorisés pour création / modification
+const allowedFields = [
+    "date",
+    "mileage",
+    "categoryId",
+    "label",
+    "amount",
+    "supplier",
+    "comment"
+];
+
+// Fonction utilitaire pour filtrer req.body
+function filterBody(body) {
+    const filtered = {};
+    for (const key of allowedFields) {
+        if (body[key] !== undefined) {
+            filtered[key] = body[key];
+        }
+    }
+    return filtered;
+}
+
 // GET /api/expenses
 router.get("/", async (req, res) => {
     try {
@@ -21,7 +43,14 @@ router.get("/", async (req, res) => {
 // POST /api/expenses
 router.post("/", async (req, res) => {
     try {
-        const expense = new Expense({ ...req.body, userId: req.userId });
+        const data = filterBody(req.body);
+
+        const expense = new Expense({
+            ...data,
+            userId: req.userId,
+            vehicleId: req.body.vehicleId, // autorisé uniquement à la création
+        });
+
         await expense.save();
         res.status(201).json(expense);
     } catch (err) {
@@ -32,11 +61,14 @@ router.post("/", async (req, res) => {
 // PUT /api/expenses/:id
 router.put("/:id", async (req, res) => {
     try {
+        const updates = filterBody(req.body);
+
         const expense = await Expense.findOneAndUpdate(
             { _id: req.params.id, userId: req.userId },
-            req.body,
+            updates,
             { new: true }
         );
+
         if (!expense) return res.status(404).json({ error: "Dépense non trouvée" });
         res.json(expense);
     } catch (err) {

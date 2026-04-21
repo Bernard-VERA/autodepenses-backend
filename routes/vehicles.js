@@ -7,6 +7,28 @@ const router = express.Router();
 // Toutes les routes nécessitent l'authentification
 router.use(auth);
 
+// Champs autorisés pour création / modification
+const allowedFields = [
+    "name",
+    "brand",
+    "model",
+    "year",
+    "purchaseDate",
+    "purchasePrice",
+    "initialMileage"
+];
+
+// Fonction utilitaire pour filtrer req.body
+function filterBody(body) {
+    const filtered = {};
+    for (const key of allowedFields) {
+        if (body[key] !== undefined) {
+            filtered[key] = body[key];
+        }
+    }
+    return filtered;
+}
+
 // GET /api/vehicles
 router.get("/", async (req, res) => {
     try {
@@ -22,7 +44,8 @@ router.get("/", async (req, res) => {
 // POST /api/vehicles
 router.post("/", async (req, res) => {
     try {
-        const vehicle = new Vehicle({ ...req.body, userId: req.userId });
+        const data = filterBody(req.body);
+        const vehicle = new Vehicle({ ...data, userId: req.userId });
         await vehicle.save();
         res.status(201).json(vehicle);
     } catch (err) {
@@ -33,11 +56,14 @@ router.post("/", async (req, res) => {
 // PUT /api/vehicles/:id
 router.put("/:id", async (req, res) => {
     try {
+        const updates = filterBody(req.body);
+
         const vehicle = await Vehicle.findOneAndUpdate(
             { _id: req.params.id, userId: req.userId },
-            req.body,
+            updates,
             { new: true }
         );
+
         if (!vehicle) return res.status(404).json({ error: "Véhicule non trouvé" });
         res.json(vehicle);
     } catch (err) {

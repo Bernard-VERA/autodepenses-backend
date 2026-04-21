@@ -66,7 +66,7 @@ router.put("/:id", async (req, res) => {
         const expense = await Expense.findOneAndUpdate(
             { _id: req.params.id, userId: req.userId },
             updates,
-            { new: true }
+            { returnDocument: "after" }
         );
 
         if (!expense) return res.status(404).json({ error: "Dépense non trouvée" });

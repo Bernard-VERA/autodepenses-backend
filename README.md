@@ -24,7 +24,8 @@ Le projet est construit en deux étapes successives :
 2. Création d'un Backend — Authentification et base de données
 *	Mise en place d’un système d’authentification utilisateur pour sécuriser l’accès aux données.
 *	Stockage centralisé des dépenses dans une base de données, permettant la synchronisation entre plusieurs appareils.
-*	API dédiée pour gérer les opérations CRUD et assurer une transition fluide entre la version locale et la version connectée.  
+*	API dédiée pour gérer les opérations CRUD et assurer une transition fluide entre la version locale et la version connectée.
+*   Création d'une branche "ForVercel" dédiée  sur GitHub
 <br/>
 <br/>
 Vous êtes actuellement sur la partie BACKEND du projet.  

@@ -1,10 +1,11 @@
-const express = require("express");
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-const User = require("../models/User");
-const auth = require("../middleware/auth");
-const { body, query, validationResult } = require("express-validator");
+import express from "express";
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import User from "../models/User.js";
+import auth from "../middleware/auth.js";
+import { body, query, validationResult } from "express-validator";
+
 
 const router = express.Router();
 
@@ -128,4 +129,4 @@ router.get("/me", auth, async (req, res) => {
     res.json({ email: req.userEmail });
 });
 
-module.exports = router;
+export default router;

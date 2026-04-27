@@ -1,6 +1,6 @@
-const express = require("express");
-const Expense = require("../models/Expense");
-const auth = require("../middleware/auth");
+import express from "express";
+import Expense from "../models/Expense.js";
+import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -90,4 +90,4 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
-const express = require("express");
-const Vehicle = require("../models/Vehicle");
-const auth = require("../middleware/auth");
+import express from "express";
+import Vehicle from "../models/Vehicle.js";
+import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -85,4 +85,4 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

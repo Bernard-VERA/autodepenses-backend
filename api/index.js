@@ -28,4 +28,5 @@ app.use("/expenses", expenseRoutes);
 app.use("/vehicles", vehicleRoutes);
 
 // Export pour Vercel
-export default app;
+export default (req, res) => app(req, res);
+

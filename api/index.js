@@ -12,6 +12,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// 👉 Page d’accueil
+app.get("/", (req, res) => {
+    res.json({ message: "API AutoDépenses opérationnelle" });
+});
+
+
 // Rate limit
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

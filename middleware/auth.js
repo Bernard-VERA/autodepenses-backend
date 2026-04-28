@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-function auth(req, res, next) {
+export default function auth(req, res, next) {
     const header = req.headers.authorization;
 
     if (!header || !header.startsWith("Bearer ")) {
@@ -17,5 +17,3 @@ function auth(req, res, next) {
         return res.status(401).json({ error: "Token invalide ou expiré" });
     }
 }
-
-module.exports = auth;

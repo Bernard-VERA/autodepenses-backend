@@ -90,6 +90,7 @@ router.get("/verify",
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+
         try {
             const { token, email } = req.query;
 
@@ -115,15 +116,20 @@ router.get("/verify",
                 { expiresIn: "7d" }
             );
 
-            // Rediriger vers le frontend avec le token
-            res.redirect(
+            // Redirection manuelle (compatible Vercel)
+            res.status(302).setHeader(
+                "Location",
                 `${process.env.FRONTEND_URL}/auth/callback?token=${jwtToken}&email=${encodeURIComponent(user.email)}`
             );
+            return res.end();
+
         } catch (err) {
             console.error("Erreur verify :", err);
             res.status(500).json({ error: "Erreur serveur" });
         }
-    });
+    }
+);
+
 
 // GET /api/auth/me — retourne l'utilisateur connecté
 router.get("/me", auth, async (req, res) => {

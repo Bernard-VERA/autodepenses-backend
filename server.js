@@ -9,6 +9,9 @@ import vehicleRoutes from "./routes/vehicles.js";
 
 const app = express();
 
+// Correction indispensable pour Vercel
+app.set("trust proxy", 1);
+
 // Middlewares
 app.use(cors());
 app.use(express.json());

@@ -47,7 +47,7 @@ router.post("/send-magic-link",
             await user.save();
 
             // Construire le lien
-            const magicLink = `${process.env.BACKEND_URL}/auth/verify?token=${magicToken}&email=${encodeURIComponent(user.email)}`;
+            const magicLink = `${process.env.FRONTEND_URL}/auth/verify?token=${magicToken}&email=${encodeURIComponent(user.email)}`;
 
 
             // Envoyer l'email
@@ -119,7 +119,7 @@ router.get("/verify",
             // Redirection manuelle (compatible Vercel)
             res.status(302).setHeader(
                 "Location",
-                `${process.env.FRONTEND_URL}/auth/callback?token=${jwtToken}&email=${encodeURIComponent(user.email)}`
+                `${process.env.BACKEND_URL}/auth/callback?token=${jwtToken}&email=${encodeURIComponent(user.email)}`
             );
             return res.end();
 

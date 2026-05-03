@@ -15,6 +15,7 @@ app.set("trust proxy", 1);
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(cors({ origin: 'https://autodepenses-frontend.vercel.app/', credentials: true }));
 
 // Page d’accueil
 app.get("/", (req, res) => {

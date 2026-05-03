@@ -119,7 +119,7 @@ router.get("/verify",
             // Redirection manuelle (compatible Vercel)
             res.status(302).setHeader(
                 "Location",
-                `${process.env.BACKEND_URL}/auth/callback?token=${jwtToken}&email=${encodeURIComponent(user.email)}`
+                `${process.env.FRONTEND_URL}/auth/callback?token=${jwtToken}&email=${encodeURIComponent(user.email)}`
             );
             return res.end();
 

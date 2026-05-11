@@ -12,12 +12,21 @@ const app = express();
 // Correction indispensable pour Vercel
 app.set("trust proxy", 1);
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
-app.use(cors({ origin: 'https://autodepenses-frontend.vercel.app', credentials: true }));
+// CORS propre et unique
+app.use(cors({
+  origin: "https://autodepenses-frontend.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
 
-// Page d’accueil
+// Support des requêtes préflight
+app.options("*", cors());
+
+// Middlewares
+app.use(express.json());
+
+// Page d’accueil API
 app.get("/", (req, res) => {
   res.json({ message: "API AutoDépenses opérationnelle" });
 });
@@ -33,9 +42,3 @@ app.use(limiter);
 connectDB();
 
 // Routes
-app.use("/auth", authRoutes);
-app.use("/expenses", expenseRoutes);
-app.use("/vehicles", vehicleRoutes);
-
-export default app;
-// Retour en arrière

@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 // Support des requêtes préflight
-app.options("*", cors());
+app.options("(.*)", cors());
 
 // Middlewares
 app.use(express.json());

@@ -1,6 +1,12 @@
 import jwt from "jsonwebtoken";
 
 export default function auth(req, res, next) {
+
+    // ⭐ Laisser passer les requêtes OPTIONS (préflight CORS)
+    if (req.method === "OPTIONS") {
+        return next();
+    }
+
     const header = req.headers.authorization;
 
     if (!header || !header.startsWith("Bearer ")) {
@@ -17,3 +23,4 @@ export default function auth(req, res, next) {
         return res.status(401).json({ error: "Token invalide ou expiré" });
     }
 }
+

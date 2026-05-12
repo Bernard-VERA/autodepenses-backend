@@ -9,6 +9,13 @@ import { body, query, validationResult } from "express-validator";
 
 const router = express.Router();
 
+import cors from "cors";
+
+// Autoriser les préflight CORS pour les routes d'auth
+router.options("/send-magic-link", cors());
+router.options("/verify", cors());
+
+
 // Créer le transporteur email
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,

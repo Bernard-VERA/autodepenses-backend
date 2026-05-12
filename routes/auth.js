@@ -54,7 +54,7 @@ router.post("/send-magic-link",
             await user.save();
 
             // Construire le lien
-            const magicLink = `${process.env.BACKEND_URL}/auth/verify?token=${magicToken}&email=${encodeURIComponent(user.email)}`;
+            const magicLink = `${process.env.BACKEND_URL}/api/auth/verify?token=${magicToken}&email=${encodeURIComponent(user.email)}`;
 
 
             // Envoyer l'email

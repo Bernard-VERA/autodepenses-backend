@@ -42,3 +42,4 @@ app.use(limiter);
 connectDB();
 
 // Routes
+export default app;
